@@ -6,9 +6,8 @@ c = gets.chomp.to_i
 d = b**2 - 4*a*c
 print "Дискриминант: #{d}. "
 
-radical_d = Math.sqrt(d)
-
 if d > 0
+  radical_d = Math.sqrt(d)
   x1 = (-b + radical_d) / (2*a)
   x2 = (-b - radical_d) / (2*a)
   puts "Два различных корня. Х1=#{x1}, х2=#{x2}!"

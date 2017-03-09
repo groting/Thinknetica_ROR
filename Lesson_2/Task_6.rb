@@ -9,7 +9,7 @@ loop do
   break if product == "стоп"
 
   price = gets.chomp.to_f
-  count = gets.chomp.to_i
+  count = gets.chomp.to_f
 
   
 

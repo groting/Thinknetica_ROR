@@ -1,9 +1,10 @@
-vowels = ["a","e","y","u","i","o"]
+vowels = %w(a e y u i o)
 num = 1
 
 vowels_hash = {}
 
-for letter in "a".."z" do 
-  vowels_hash[letter] = num if vowels.include?(letter)
-  num += 1
-end
+letters = "a".."z"
+
+letters.each.with_index {|letter, index| vowels_hash[letter] = index+1 if vowels.include?(letter)}
+
+puts vowels_hash

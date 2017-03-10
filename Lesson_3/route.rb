@@ -10,20 +10,21 @@ class Route
     @route << first_station.station_name << last_station.station_name
   end
 
-  def change_route(value, station_name)
+  def change_route(value, s_name)
+    s_name = s_name.station_name
     if value.downcase == "add"
-      if self.route.include?(station_name) 
+      if self.route.include?(s_name) 
         puts "Такая станция уже есть в маршруте." 
       else
         self.route.delete_at(-1)
-        self.route << station_name << self.last_station
+        self.route << s_name << self.last_station
       end
     elsif value.downcase == "delete"
-      if self.route.include?(station_name)
-        if station_name == self.first_station || station_name == self.last_station
+      if self.route.include?(s_name)
+        if s_name == self.first_station || s_name == self.last_station
           puts "Нельзя удалять начальную или конечную станцию!"
         else
-          self.route.delete(station_name)
+          self.route.delete(s_name)
         end
       else
         puts "Такой станции нет в маршруте."

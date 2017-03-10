@@ -50,7 +50,8 @@ class Train
       puts "Поезд на начальной станции: #{self.train_route.route[0]}. Cледующая станция: #{self.train_route.route[1]}."
     elsif  self.current_station == self.train_route.route.size-1 
       puts "Предыдущая станция: #{self.train_route.route[-2]}. Поезд достиг конечной станции: #{self.train_route.route[-1]}."
-    
+    else
+       puts "Предыдущая станция: #{self.train_route.route[self.current_station-1]}. Текущая станция: #{self.train_route.route[self.current_station]} Cледующая станция: #{self.train_route.route[self.current_station+1]}."
     end
   end 
 end

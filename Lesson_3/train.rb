@@ -1,18 +1,21 @@
 class Train
-  attr_accessor :speed
-  attr_accessor :num_of_wagons
-  attr_accessor :train_route
-  attr_accessor :type
-  attr_accessor :current_station
-  attr_accessor :number
+  attr_reader :speed
+  attr_reader :lenght
+  attr_reader :route
+  attr_reader :type
+  attr_reader :current_station
+  attr_reader :number
 
-  def initialize(number, type, num_of_wagons)
+  def initialize(number, type, lenght)
     @number = number
     @type = type
-    @num_of_wagons = num_of_wagons
-    @train_route = []
-    @current_station = 0
+    @lenght = lenght
     @speed = 0
+  end
+
+  def route=(input)
+    @route = input
+    @current_station = self.route.stations.first
   end
 
   def add_speed(speed)
@@ -23,35 +26,42 @@ class Train
     self.speed = 0
   end
 
-  def train_length_change(value = "add")
+  def add_lenght
     if self.speed == 0 
-      if value.downcase == "add"
-        self.num_of_wagons += 1
-      elsif value.downcase == "delete"
-        self.num_of_wagons -= 1
-      else
-      puts "Используйте 'add' для прицепки вагона в состав и 'delete' для отцепки."
-      end
+      self.lenght += 1 
     else 
       puts "Изменения длины состава может осуществляться только если поезд не движется."
     end
   end
 
-  def train_move(num)
-    self.current_station += num
-    if self.current_station > self.train_route.route.size-1 || self.current_station < 0
-      puts "Поезд не может переместиться туда."
-      self.current_station -=num
+  def reduce_lenght
+    if self.speed == 0 
+      self.lenght -= 1     
+    else 
+      puts "Изменения длины состава может осуществляться только если поезд не движется."
     end
   end
 
-  def train_station
-    if self.current_station == 0
-      puts "Поезд на начальной станции: #{self.train_route.route[0]}. Cледующая станция: #{self.train_route.route[1]}."
-    elsif  self.current_station == self.train_route.route.size-1 
-      puts "Предыдущая станция: #{self.train_route.route[-2]}. Поезд достиг конечной станции: #{self.train_route.route[-1]}."
+  def move(num)
+    i = self.route.stations.index(current_station)
+    if i + num > self.route.stations.size-1 || i + num < 0
+      puts "Поезд не может переместиться туда."
     else
-       puts "Предыдущая станция: #{self.train_route.route[self.current_station-1]}. Текущая станция: #{self.train_route.route[self.current_station]} Cледующая станция: #{self.train_route.route[self.current_station+1]}."
+      self.current_station.delete_train(self)
+      self.current_station = self.route.stations[i+num]
+      self.current_station.add_train(self) 
+    end 
+  end
+
+  def station
+    arr_s = self.route.stations
+    i = self.route.stations.index(current_station)
+    if self.current_station == arr_s.first
+      puts "Поезд на начальной станции: #{arr_s[0].name}. Cледующая станция: #{arr_s[1].name}."
+    elsif  self.current_station == arr_s.last 
+      puts "Предыдущая станция: #{arr_s[-2].name}. Поезд достиг конечной станции: #{arr_s[-1].name}."
+    else
+      puts "Предыдущая станция: #{arr_s[i-1].name}. Текущая станция: #{arr_s[i].name}. Cледующая станция: #{arr_s[i+1].name}."
     end
   end 
 end

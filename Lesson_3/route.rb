@@ -6,11 +6,11 @@ class Route
   end
 
   def add(station)
-      if stations.include?(station) 
-        puts "Такая станция уже есть в маршруте." 
-      else
-        stations.insert(-2, station)
-      end 
+    if stations.include?(station) 
+      puts "Такая станция уже есть в маршруте." 
+    else
+      stations.insert(-2, station)
+    end 
   end
 
   def delete(station)  

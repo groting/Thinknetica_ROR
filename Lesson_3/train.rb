@@ -1,13 +1,18 @@
 class Train
-  attr_reader  :type, :number
-  attr_accessor :speed, :wagons_count, :route, :current_station_index
+  attr_reader  :type, :number, :wagons, :route
+  attr_accessor :speed  
 
-  def initialize(number, type, wagons_count)
+  def initialize(number)
     @number = number
-    @type = type
-    @wagons_count = wagons_count
+    @wagons = []
     @speed = 0
+    @type = 'Train'
     @current_station_index = 0
+  end
+
+  def route=(route)
+    @route = route
+    route.stations.first.add_train(self)
   end
 
   def add_speed(speed)
@@ -18,9 +23,9 @@ class Train
     self.speed = 0
   end
 
-  def add_wagon
+  def add_wagon(wagon)
     if speed == 0 
-      self.wagons_count += 1 
+      wagons << wagon
     else 
       puts "Изменения длины состава может осуществляться только если поезд не движется."
     end
@@ -28,10 +33,10 @@ class Train
 
   def delete_wagon
     if speed == 0
-      if wagons_count != 0
-        self.wagons_count -= 1 
+      if wagons.any?
+        wagons.delete(wagons.last)
       else 
-        puts "В составе пока нет вагонов, вы можете добавить их командой 'add_wagon'."
+        puts "В составе нет вагонов."
       end    
     else 
       puts "Изменения длины состава может осуществляться только если поезд не движется."
@@ -77,4 +82,9 @@ class Train
         route.stations[current_station_index-1]
       end
     end
+
+    protected
+
+    attr_accessor :current_station_index 
+    # Перемещенно в Protected так как используется для внутренних вычислений и не должно задаваться снаружи
 end

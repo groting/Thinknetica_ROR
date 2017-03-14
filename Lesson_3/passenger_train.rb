@@ -8,11 +8,11 @@ class PassengerTrain < Train
   end
 
   def passenger_wagon?(wagon)
-    wagon == PassengerWagon
+    wagon.is_a? PassengerWagon
   end
 
   def add_wagon(wagon)
-    if Passenger_wagon?(wagon)
+    if passenger_wagon?(wagon)
       super
     else
       puts 'В пассажирском поезде могут быть только пассажирские вагоны.'

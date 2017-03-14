@@ -19,6 +19,7 @@ class Route
         puts "Нельзя удалять начальную или конечную станцию!"
       else
         stations.delete(station)
+        puts 'Станция удалена из маршрута!'
       end
     else
       puts "Такой станции нет в маршруте."

@@ -8,7 +8,7 @@ class CargoTrain < Train
   end
 
   def cargo_wagon?(wagon)
-    wagon == CargoWagon
+    wagon.class.name == CargoWagon
   end
 
   def add_wagon(wagon)

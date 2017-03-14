@@ -1,14 +1,14 @@
 require_relative 'train'
 
-class Cargo_train < Train
+class CargoTrain < Train
 
   def initialize(number)
     super
     @type = 'Cargo train'
   end
 
-  def Cargo_wagon?(wagon)
-    wagon.type == 'Cargo wagon'
+  def cargo_wagon?(wagon)
+    wagon == CargoWagon
   end
 
   def add_wagon(wagon)

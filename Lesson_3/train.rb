@@ -1,6 +1,19 @@
+require_relative 'producer_name'
+require_relative 'instance_counter'
+
 class Train
+  
+  include ProducerName
+  include InstanceCounter
+
   attr_reader  :type, :number, :wagons, :route
   attr_accessor :speed  
+
+  @@trains = []
+
+  def self.find(number)
+    @@trains.find {|train| train.number == number}
+  end
 
   def initialize(number)
     @number = number
@@ -8,6 +21,8 @@ class Train
     @speed = 0
     @type = 'Train'
     @current_station_index = 0
+    @@trains << self
+    register_instance
   end
 
   def route=(route)

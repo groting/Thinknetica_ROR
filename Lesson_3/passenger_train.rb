@@ -7,12 +7,8 @@ class PassengerTrain < Train
     @type = 'Passenger train'
   end
 
-  def passenger_wagon?(wagon)
-    wagon.is_a? PassengerWagon
-  end
-
   def add_wagon(wagon)
-    if passenger_wagon?(wagon)
+    if wagon.is_a? PassengerWagon
       super
     else
       puts 'В пассажирском поезде могут быть только пассажирские вагоны.'

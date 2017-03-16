@@ -40,6 +40,7 @@ class Route
 
   def validate! 
     raise "Название маршрута не может быть меньше 3 символов!" if name.size < 3
+    raise "Начальная и конечная стании должны быть объектами класса Station!" if !stations.first.is_a? Station || !stations.last.is_a? Station
     true
   end
 end

@@ -18,6 +18,10 @@ class Station
     @@stations[name] = self
   end
 
+  def each_train
+    trains.each {|train| yield(train)}
+  end
+
   def valid?
     validate!
   rescue
@@ -39,7 +43,7 @@ class Station
   protected
 
   def validate!
-    raise "Название станции не может быть меньше 3 символов!" if name.size < 3 || name.nil?
+    raise "Название станции не может быть меньше 3 символов!" if name.nil? || name.size < 3
     true
   end
 end

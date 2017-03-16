@@ -9,7 +9,7 @@ class Train
   attr_reader  :type, :number, :wagons, :route
   attr_accessor :speed  
 
-  NUMBER_FORMAT = /^(\d|\w){3}-?(\d|\w){2}$/
+  NUMBER_FORMAT = /^(\d|\w|а-я){3}-?(\d|\w|а-я){2}$/i
 
   @@trains = {}
 
@@ -24,9 +24,9 @@ class Train
   def initialize(number)
     @number = number
     validate!
-    @wagons = []
+    @wagons = {}
     @speed = 0
-    @type = 'Train'
+    @type = 'Поезд'
     @current_station_index = 0
     @@trains[number] = self
     register_instance
@@ -36,6 +36,10 @@ class Train
     validate!
   rescue
     false
+  end
+
+  def each_wagon
+    wagons.each_value {|wagon| yield(wagon)}
   end
 
   def route=(route)
@@ -53,7 +57,7 @@ class Train
 
   def add_wagon(wagon)
     raise "Изменения длины состава может осуществляться только если поезд не движется." if speed != 0 
-    wagons << wagon
+    self.wagons[wagon.number] = wagon
   end
 
   def delete_wagon
@@ -99,6 +103,7 @@ class Train
     protected
 
     attr_accessor :current_station_index 
+    attr_writer :wagons
     # Перемещенно в Protected так как используется для внутренних вычислений и не должно задаваться снаружи
 
     def validate!

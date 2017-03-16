@@ -39,7 +39,7 @@ class Station
   protected
 
   def validate!
-    raise "Название станции не может быть меньше 3 символов!" if name.size < 3
+    raise "Название станции не может быть меньше 3 символов!" if name.size < 3 || name.nil?
     true
   end
 end

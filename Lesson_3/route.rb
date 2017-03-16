@@ -1,29 +1,45 @@
 class Route
-  attr_reader :stations
+  attr_reader :stations, :name
 
-  def initialize(first_station, last_station)
+  @@routes = {}
+
+  def self.find(name)
+    @@routes[name]
+  end
+
+  def self.all
+    @@routes
+  end
+
+  def initialize(first_station, last_station, name)
     @stations = [first_station, last_station]
+    @name = name
+    validate!
+    @@routes[name] = self
+  end
+
+  def valid?
+    validate!
+  rescue
+    false
   end
 
   def add(station)
-    if stations.include?(station) 
-      puts "Такая станция уже есть в маршруте." 
-    else
-      stations.insert(-2, station)
-    end 
+    raise "Такая станция уже есть в маршруте." if stations.include?(station) 
+    stations.insert(-2, station)
   end
 
   def delete(station)  
-    if stations.include?(station)
-      if station == stations.first || station == stations.last
-        puts "Нельзя удалять начальную или конечную станцию!"
-      else
-        stations.delete(station)
-        puts 'Станция удалена из маршрута!'
-      end
-    else
-      puts "Такой станции нет в маршруте."
-    end
+    raise "Такой станции нет в маршруте." if !stations.include?(station)
+    raise "Нельзя удалять начальную или конечную станцию!" if station == stations.first || station == stations.last
+    stations.delete(station)
+    puts 'Станция удалена из маршрута!'
   end
 
+  protected
+
+  def validate! 
+    raise "Название маршрута не может быть меньше 3 символов!" if name.size < 3
+    true
+  end
 end

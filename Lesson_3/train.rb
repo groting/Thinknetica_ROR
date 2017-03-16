@@ -9,20 +9,33 @@ class Train
   attr_reader  :type, :number, :wagons, :route
   attr_accessor :speed  
 
+  NUMBER_FORMAT = /^(\d|\w){3}-?(\d|\w){2}$/
+
   @@trains = {}
 
   def self.find(number)
     @@trains[number]
   end
 
+  def self.all
+    @@trains
+  end
+
   def initialize(number)
     @number = number
+    validate!
     @wagons = []
     @speed = 0
     @type = 'Train'
     @current_station_index = 0
     @@trains[number] = self
     register_instance
+  end
+
+  def valid?
+    validate!
+  rescue
+    false
   end
 
   def route=(route)
@@ -39,43 +52,28 @@ class Train
   end
 
   def add_wagon(wagon)
-    if speed == 0 
-      wagons << wagon
-    else 
-      puts "Изменения длины состава может осуществляться только если поезд не движется."
-    end
+    raise "Изменения длины состава может осуществляться только если поезд не движется." if speed != 0 
+    wagons << wagon
   end
 
   def delete_wagon
-    if speed == 0
-      if wagons.any?
-        wagons.delete(wagons.last)
-      else 
-        puts "В составе нет вагонов."
-      end    
-    else 
-      puts "Изменения длины состава может осуществляться только если поезд не движется."
-    end
+    raise "Изменения длины состава может осуществляться только если поезд не движется." if speed != 0
+    raise "В составе нет вагонов." if wagons.empty?
+    wagons.delete(wagons.last)
   end
 
   def move_forward
-    if current_station_index + 1 > route.stations.size-1 
-      puts "Поезд не может переместиться туда."
-    else
-      route.stations[current_station_index].delete_train(self)
-      self.current_station_index +=  1
-      route.stations[current_station_index].add_train(self) 
-    end 
+    raise "Поезд не может переместиться туда." if current_station_index + 1 > route.stations.size-1 
+    route.stations[current_station_index].delete_train(self)
+    self.current_station_index +=  1
+    route.stations[current_station_index].add_train(self)  
   end
 
    def move_backward
-    if current_station_index - 1 < 0
-      puts "Поезд не может переместиться туда."
-    else
-      route.stations[current_station_index].delete_train(self)
-      self.current_station_index -= 1
-      route.stations[current_station_index].add_train(self) 
-    end 
+    raise "Поезд не может переместиться туда." if current_station_index - 1 < 0
+    route.stations[current_station_index].delete_train(self)
+    self.current_station_index -= 1
+    route.stations[current_station_index].add_train(self)  
   end
 
   def next_station
@@ -102,4 +100,9 @@ class Train
 
     attr_accessor :current_station_index 
     # Перемещенно в Protected так как используется для внутренних вычислений и не должно задаваться снаружи
+
+    def validate!
+      raise "Неверный формат номера!" if number !~ NUMBER_FORMAT
+      true
+    end
 end

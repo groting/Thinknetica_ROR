@@ -6,18 +6,11 @@ require_relative 'station'
 require_relative 'route'
 
 class Main
-  attr_reader :stations, :trains, :routes
-
-  def initialize
-    @stations = {}
-    @trains = {}
-    @routes = {}
-  end
 
   def run
     loop do
 
-      puts 'Добро пожаловать в Поезда v 1.0'
+      puts 'Добро пожаловать в Поезда v 1.1'
       puts 'Список доступных команд:'
       puts '1) Создать станцию, Создать поезд, Создать маршрут.'
       puts '2) Изменить маршрут, Назначить маршрут поезду.' 
@@ -31,7 +24,7 @@ class Main
       when 'Создать станцию'
         create_station
       when 'Создать поезд'
-        create_train 
+        create_train
       when 'Создать маршрут'
         create_route
       when 'Изменить маршрут'
@@ -63,119 +56,92 @@ private
   def create_station
     puts 'Введите название станции:'
     station = gets.chomp
-    if !stations.key?(station)
-      stations[station] = Station.new(station)
-      puts 'Cтанция создана!'
-    else
-      puts 'Такая станция уже существует!'
-    end
+    raise 'Такая станция уже существует!' if Station.all.key?(station)
+    Station.new(station)
+    puts 'Cтанция создана!' 
   end
   
   def create_train
+    attempt = 0
     puts 'Введите номер поезда:'
-    train_number = gets.chomp.to_i
-    if trains.key?(train_number)
-      puts 'Такой поезд уже существует!'
-      return
-    end
+    train_number = gets.chomp
+    raise 'Такой поезд уже существует!' if Train.all.key?(train_number)
     puts 'Введите тип поезда(Грузовой\Пассажирский):'
     train_type = gets.chomp
     if train_type  == 'Грузовой'
-      trains[train_number] = CargoTrain.new(train_number)
+      CargoTrain.new(train_number)
       puts 'Поезд создан!'
     elsif train_type == 'Пассажирский'
-      trains[train_number] = PassengerTrain.new(train_number)
+      PassengerTrain.new(train_number)
       puts 'Поезд создан!'
     else
-      puts 'Тип поезда указан неверно!'
-    end
+      raise 'Тип поезда указан неверно!'
+    end 
+  rescue Exception => e
+    puts "Произошла ошибка: #{e.message}. Повторите попытку."
+    attempt += 1
+    retry if attempt < 3
+    raise "Превышено количество попыток!" 
   end
 
   def create_route
     puts 'Введите название маршрута:'
     route_name = gets.chomp
-    if routes.key?(route_name)
-      puts 'Такой маршрут уже существует!'
-      return
-    end
+    raise 'Такой маршрут уже существует!' if Route.all.key?(route_name)
     puts 'Введите начальную станцию маршрута:'
     station = gets.chomp
-    if stations.key?(station)
-      route_first_station = stations[station]
-      puts 'Введите конечную станцию маршрута:'
-      station = gets.chomp
-      if stations.key?(station)
-        route_last_station = stations[station]
-        routes[route_name] = Route.new(route_first_station, route_last_station)
-        puts 'Маршрут создан!'
-      else
-        puts 'Такой станции не существует!'
-      end
-    else
-      puts 'Такой станции не существует!'
-    end     
+    raise 'Такой станции не существует!' if !Station.all.key?(station)
+    route_first_station = Station.all[station]
+    puts 'Введите конечную станцию маршрута:'
+    station = gets.chomp
+    raise 'Такой станции не существует!' if !Station.all.key?(station)
+    route_last_station = Station.all[station]
+    Route.new(route_first_station, route_last_station)
+    puts 'Маршрут создан!'  
   end
 
   def change_route
     puts 'Введите название маршрута:'
     route_name = gets.chomp
-    if !routes.key?(route_name)
-      puts 'Такого маршрута не существует!'
-      return
-    end 
+    raise 'Такого маршрута не существует!' if !Route.all.key?(route_name)
     puts 'Введите действие (Добавить\Удалить):'
     action = gets.chomp
     if  action == 'Добавить'
       puts 'Введите название станции:'  
       station = gets.chomp
-      if stations.key?(station)
-        routes[route_name].add(stations[station])
-        puts 'Станция добавлена к маршруту!'
-      else
-        puts 'Такой станции не существует!'
-      end
+      raise 'Такой станции не существует!' if !Station.all.key?(station)
+      Route.all[route_name].add(Station.all[station])
+      puts 'Станция добавлена к маршруту!'
     elsif action == 'Удалить'
       puts 'Введите название станции:'
       station = gets.chomp
-      if stations.key?(station)
-        routes[route_name].delete(stations[station])
-      else
-        puts 'Такой станции не существует!'
-      end
+      raise 'Такой  станции не существует!' if !Station.all.key?(station)
+      Route.all[route_name].delete(Station.all[station])
     else
-      puts 'Такого действия не существует!'
-    end  
+      raise 'Такого действия не существует!'
+    end    
   end
 
   def set_train_route
     puts 'Введите номер поезда:'
     train_number = gets.chomp.to_i
-    if !trains.key?(train_number)      
-      puts 'Такого поезда не существует!'
-      return
-    end
+    raise 'Такого поезда не существует!' if !Train.all.key?(train_number)      
     puts 'Введите название маршрута:'
     route_name = gets.chomp
-    if routes.key?(route_name)
-      trains[train_number].route = routes[route_name]
-      puts 'Маршрут назначен!'
-    else
-      puts 'Такого маршрута не существует!'
-    end
+    raise 'Такого маршрута не существует!' if !Route.all.key?(route_name)
+    Train.all[train_number].route = Route.all[route_name]
+    puts 'Маршрут назначен!'
   end
 
   def attach_wagon
     puts 'Введите номер поезда:'
     train_number = gets.chomp.to_i
-    if !trains.key?(train_number)
-      puts 'Такого поезда не существует!'
-      return
-    end
-    if trains[train_number].type == 'Cargo train'
-      trains[train_number].add_wagon(CargoWagon.new)
+    raise 'Такого поезда не существует!' if !Train.all.key?(train_number)
+    if Train.all[train_number].type == 'Cargo train'
+      Train.all[train_number].add_wagon(CargoWagon.new)
       puts 'Вагон добавлен!'
     else
-      trains[train_number].add_wagon(PassengerWagon.new)
+      Train.all[train_number].add_wagon(PassengerWagon.new)
       puts 'Вагон добавлен!'
     end
   end
@@ -183,52 +149,37 @@ private
   def detach_wagon
     puts 'Введите номер поезда:'
     train_number = gets.chomp.to_i
-    if trains.key?(train_number)
-      trains[train_number].delete_wagon
-      puts 'Вагон удален!'
-    else
-      puts 'Такого поезда не существует!'
-    end
+    raise 'Такого поезда не существует!' if !Train.all.key?(train_number)
+    Train.all[train_number].delete_wagon
+    puts 'Вагон удален!'
   end
 
   def train_go_forward
     puts 'Введите номер поезда:'
     train_number = gets.chomp.to_i
-    if trains.key?(train_number) 
-      trains[train_number].move_forward
-      puts 'Поезд перемещен вперед!'
-    else
-      puts 'Такого поезда не существует!'
-    end
+    raise 'Такого поезда не существует!' if !Train.all.key?(train_number) 
+    Train.all[train_number].move_forward
+    puts 'Поезд перемещен вперед!'
   end
 
   def train_go_backward
     puts 'Введите номер поезда:'
     train_number = gets.chomp.to_i
-    if trains.key?(train_number) 
-      trains[train_number].move_backward
-      puts 'Поезд перемещен назад!'
-    else
-      puts 'Такого поезда не существует!'
-    end
+    raise 'Такого поезда не существует!' if !Train.all.key?(train_number) 
+    Train.all[train_number].move_backward
+    puts 'Поезд перемещен назад!'
   end
 
   def list_of_stations
-    if stations.any?
-      puts stations.keys
-    else
-      puts 'Вы пока не создали ни одной станции!'
-    end
+    raise 'Вы пока не создали ни одной станции!' if Station.all.empty?
+    puts Station.all.keys
   end
 
   def trains_at_station
     puts 'Введите название стании:'
     station = gets.chomp
-    if stations.key?(station)
-      stations[station].trains.each {|train| puts train.number}
-    else
-      puts 'Такой станции не существует!'
-    end
+    raise 'Такой станции не существует!' if !Station.all.key?(station)
+    Station.all[station].trains.each {|train| puts train.number}
   end
 end
 

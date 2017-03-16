@@ -96,7 +96,7 @@ private
     station = gets.chomp
     raise 'Такой станции не существует!' if !Station.all.key?(station)
     route_last_station = Station.all[station]
-    Route.new(route_first_station, route_last_station)
+    Route.new(route_first_station, route_last_station, route_name)
     puts 'Маршрут создан!'  
   end
 

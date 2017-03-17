@@ -9,7 +9,7 @@ class Train
   attr_reader  :type, :number, :wagons, :route
   attr_accessor :speed  
 
-  NUMBER_FORMAT = /^(\d|\w|а-я){3}-?(\d|\w|а-я){2}$/i
+  NUMBER_FORMAT = /^(\d|\w|[[:word:]]){3}-?(\d|\w|[[:word:]]){2}$/i
 
   @@trains = {}
 

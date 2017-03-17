@@ -9,7 +9,7 @@ class Wagon
     @capacity = capacity
     validate!
     @free_space = capacity
-    @number = rand(1-9999)
+    @number = rand(1..9999)
   end
 
   def valide?
@@ -26,7 +26,7 @@ class Wagon
   attr_writer :free_space
 
   def validate!
-    raise "Значение вместимости должно быть больше нуля!" if capacity.nil? || !capacity.kind_of?(Numeric) || capacity <= 0
+    raise "Значение вместимости должно быть больше нуля!" if !capacity.kind_of?(Numeric) || capacity <= 0
     true
   end
 end

@@ -30,7 +30,7 @@ class Route
   end
 
   def delete(station)  
-    raise "Такой станции нет в маршруте." if !stations.include?(station)
+    raise "Такой станции нет в маршруте." unless stations.include?(station)
     raise "Нельзя удалять начальную или конечную станцию!" if station == stations.first || station == stations.last
     stations.delete(station)
     puts 'Станция удалена из маршрута!'

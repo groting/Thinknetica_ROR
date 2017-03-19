@@ -22,11 +22,12 @@ class Wagon
     capacity - free_space
   end
 
-  protected 
+  protected
+
   attr_writer :free_space
 
   def validate!
-    raise "Значение вместимости должно быть больше нуля!" if !capacity.kind_of?(Numeric) || capacity <= 0
+    raise 'Значение вместимости должно быть больше нуля!' if !capacity.is_a?(Numeric) || capacity <= 0
     true
   end
 end

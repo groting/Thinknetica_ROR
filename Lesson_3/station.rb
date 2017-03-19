@@ -9,7 +9,7 @@ class Station
 
   def self.find(name)
     @@stations[name]
-  end 
+  end
 
   def initialize(name)
     @name = name
@@ -19,7 +19,7 @@ class Station
   end
 
   def each_train
-    trains.each {|train| yield(train)}
+    trains.each { |train| yield(train) }
   end
 
   def valid?
@@ -37,13 +37,13 @@ class Station
   end
 
   def types_of_trains(type)
-    trains.select {|train| type == train.type}
+    trains.select { |train| type == train.type }
   end
 
   protected
 
   def validate!
-    raise "Название станции не может быть меньше 3 символов!" if name.nil? || name.size < 3
+    raise 'Название станции не может быть меньше 3 символов!' if name.nil? || name.size < 3
     true
   end
 end

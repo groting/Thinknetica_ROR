@@ -1,6 +1,9 @@
 require_relative 'wagon'
 
 class CargoWagon < Wagon
+  include Validation
+
+  validate('capacity', 'type', Numeric) 
   def info
     "Тип: Грузовой Занятый объем: #{occupied} Свободный объем: #{free_space}"
   end

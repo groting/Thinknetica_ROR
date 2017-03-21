@@ -1,7 +1,11 @@
+require_relative 'validation'
+
 class Station
   attr_reader :trains, :name
 
   @@stations = {}
+
+  include Validation
 
   def self.all
     @@stations
@@ -10,6 +14,8 @@ class Station
   def self.find(name)
     @@stations[name]
   end
+
+  validate('name', 'presence')
 
   def initialize(name)
     @name = name
@@ -22,12 +28,6 @@ class Station
     trains.each { |train| yield(train) }
   end
 
-  def valid?
-    validate!
-  rescue
-    false
-  end
-
   def add_train(train)
     trains << train
   end
@@ -38,12 +38,5 @@ class Station
 
   def types_of_trains(type)
     trains.select { |train| type == train.type }
-  end
-
-  protected
-
-  def validate!
-    raise 'Название станции не может быть меньше 3 символов!' if name.nil? || name.size < 3
-    true
   end
 end

@@ -34,10 +34,10 @@ class Main
       send(options[user_answer])
       STDIN.getc
     end
-  rescue StandardError => e
-    puts "Произошла ошибка: #{e.message} Повторите попытку."
-    STDIN.getc
-    retry
+  #rescue StandardError => e
+    #puts "Произошла ошибка: #{e.message} Повторите попытку."
+    #STDIN.getc
+    #retry
   end
 
   private

@@ -1,7 +1,11 @@
 require_relative 'producer_name'
+require_relative 'validation'
 
 class Wagon
   include ProducerName
+  include Validation
+
+  validate('capacity', 'type', Numeric) 
 
   attr_reader :capacity, :free_space, :number
 
@@ -12,12 +16,6 @@ class Wagon
     @number = rand(1..9999)
   end
 
-  def valide?
-    validate!
-  rescue
-    false
-  end
-
   def occupied
     capacity - free_space
   end
@@ -25,9 +23,4 @@ class Wagon
   protected
 
   attr_writer :free_space
-
-  def validate!
-    raise 'Значение вместимости должно быть больше нуля!' if !capacity.is_a?(Numeric) || capacity <= 0
-    true
-  end
 end

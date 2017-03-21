@@ -1,7 +1,15 @@
+require_relative 'validation'
+
 class Route
   attr_reader :stations, :name
 
+  include Validation
+
   @@routes = {}
+
+  validate('name', 'presence')
+  #validate('first_station', 'presence')
+  #validate('last_station', 'presence')
 
   def self.find(name)
     @@routes[name]
@@ -14,14 +22,10 @@ class Route
   def initialize(first_station, last_station, name)
     @stations = [first_station, last_station]
     @name = name
+    puts first_station.class
+    puts first_station.inspect
     validate!
     @@routes[name] = self
-  end
-
-  def valid?
-    validate!
-  rescue
-    false
   end
 
   def add(station)
@@ -35,13 +39,5 @@ class Route
     raise 'Нельзя удалять начальную или конечную станцию!' if station == stations.first || station == stations.last
     stations.delete(station)
     puts 'Станция удалена из маршрута!'
-  end
-
-  protected
-
-  def validate!
-    raise 'Название маршрута не может быть меньше 3 символов!' if name.nil? || name.size < 3
-    raise 'Начальная и конечная станции должны быть объектами класса Station!' if !stations.first.is_a?(Station) || !stations.last.is_a?(Station)
-    true
   end
 end

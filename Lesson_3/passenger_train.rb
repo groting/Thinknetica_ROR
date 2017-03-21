@@ -1,6 +1,10 @@
 require_relative 'train'
 
 class PassengerTrain < Train
+  include Validation
+
+  validate('number', 'format', NUMBER_FORMAT)
+
   def initialize(number)
     super
     @type = 'Пассажирский'

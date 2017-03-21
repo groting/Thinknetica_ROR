@@ -1,14 +1,20 @@
 require_relative 'producer_name'
 require_relative 'instance_counter'
+require_relative 'accessors'
+require_relative 'validation'
 
 class Train
   include ProducerName
   include InstanceCounter
+  extend Accessors
+  include Validation
 
   attr_reader :type, :number, :wagons, :route
   attr_accessor :speed
 
   NUMBER_FORMAT = /^(\d|\w|[[:word:]]){3}-?(\d|\w|[[:word:]]){2}$/i
+
+  validate('number', 'format', NUMBER_FORMAT)
 
   @@trains = {}
 
@@ -22,20 +28,14 @@ class Train
 
   def initialize(number)
     @number = number
-    validate!
     @wagons = {}
     @speed = 0
     @type = 'Поезд'
     @current_station_index = 0
     @@trains[number] = self
     register_instance
-    puts 'Поезд создан!'
-  end
-
-  def valid?
     validate!
-  rescue
-    false
+    puts 'Поезд создан!'
   end
 
   def each_wagon
@@ -106,9 +106,4 @@ class Train
   attr_accessor :current_station_index
   attr_writer :wagons
   # Перемещенно в Protected так как используется для внутренних вычислений и не должно задаваться снаружи
-
-  def validate!
-    raise 'Неверный формат номера!' if number !~ NUMBER_FORMAT
-    true
-  end
 end
